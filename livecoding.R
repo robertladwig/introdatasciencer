@@ -1,8 +1,9 @@
 ### A Short Introduction into Data Science with R
 ### August 18, 2022
 ### Presenter:  Robert Ladwig
-### based on mayerial by:  Rachel Pilla, Andrew Cannizzarro & Nicole Berry
-
+### based on material by:  Rachel Pilla, Andrew Cannizzarro & Nicole Berry
+### Bird banding data provided by Dr. Dave Russell at Miami University in 
+### collaboration with Hueston Woods State Park
 
 ######################################
 ### Introduction to R and packages ###
@@ -30,7 +31,8 @@
 # INSTALLING PACKAGE
 
 install.packages("tidyverse")
-
+# or install.packages("dplyr")
+# and install.packages("ggplot2") if internet is too slow for "tidyverse"
 
 
 # LOADING PACKAGE
@@ -65,7 +67,7 @@ c
 # 1) R is case sensitive ("A" does not equal "a")
 # 2) Best practice is to put spaces between object, values, commas, etc. (though R does not require this)
 # 3) Missing parentheses, commas, or quotation marks cause a vast majority of errors
-# 4) Your collaborators and future self will apprecite detailed comments
+# 4) Your collaborators and future self will appreciate detailed comments
 # 5) Make sure the console has a blue ">" before running (if it has a "+" then it DID NOT FINISH the previous code for some reason)
 
 ######################################
@@ -98,7 +100,7 @@ sqrt(vector1)
 
 df1 <- data.frame("Column1" = c("A", "B", "C", "D", "E"),
                   "Column2" = vector1,
-                  "Column3" = c("hi", "my", "name", "is", "Rachel"))
+                  "Column3" = c("I", "am", "doing", "data", "science"))
 df1
 
 head(df1, n = 3)
@@ -171,8 +173,8 @@ BirdNamesCounts
 
 ## choose row(s) by condition
 
-Year2000 <- filter(birds, Year == 2016)
-Year2000
+Year2016 <- filter(birds, Year == 2016)
+Year2016
 
 
 # create new column(s)
@@ -195,7 +197,7 @@ PopularBirds <- birds %>%
   filter(AnnualCount >= 8) %>%
   select(Year, CommonName, AnnualCount)
 PopularBirds
-
+unique(PopularBirds$CommonName)
 
 ## grouping and summarizing
 
@@ -252,9 +254,10 @@ abline(lm(LongDistance ~ Year, data = birdsWide),
        lty = 2)
 
 # using ggplot2-package, we can also make even more beautiful plots
-ggplot(TotalByMigration) +
-  geom_point(aes(Year, TotalCount, col = MigrationType)) + 
-  geom_line(aes(Year, TotalCount, col = MigrationType)) +
+ggplot(TotalByMigration, aes(Year, TotalCount, col = MigrationType)) +
+  geom_point() + 
+  geom_line() +
+  geom_smooth(method=lm) +
   theme_minimal()
 
 ############################
@@ -282,6 +285,9 @@ bird.anova <- aov(TotalCount ~ MigrationType, data = TotalByMigration)
 summary(bird.anova)
 
 TukeyHSD(bird.anova)
+
+#plot confidence intervals
+plot(TukeyHSD(bird.anova, conf.level=.95), las = 2)
 
 ## LINEAR REGRESSION
 
